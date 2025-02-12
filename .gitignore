@@ -1,0 +1,39 @@
+# Node modules (dependencies)
+node_modules/
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables (Sensitive credentials)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+logs/
+*.log
+yarn-error.log
+lerna-debug.log
+
+# Compiled TypeScript files
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Editor & OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+.next/
+out/
+.vercel/
+
+# Heroku build artifacts
+.heroku/
+
