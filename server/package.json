@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "NODE_ENV=production node dist/index.js",
+    "start": "npm run build --prefix ../frontend && NODE_ENV=production node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
@@ -15,7 +15,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "next": "^15.1.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

@@ -8,8 +8,9 @@ export default function Home() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    axios.get(API_BASE_URL)
-      .then(response => setMessage(response.data))
+    console.log(API_BASE_URL);
+    axios.get(`${API_BASE_URL}api/message`)
+      .then(response => setMessage(response.data.message))
       .catch(error => console.error(error));
   }, []);
 
