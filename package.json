@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build --prefix frontend && npm run build --prefix server",
+    "build": "npm install --prefix frontend && npm run build --prefix frontend && npm run build --prefix server",
     "start": "npm run build && concurrently \"npm run start:server\" \"npm run start --prefix frontend\"",
     "start:frontend": "cd frontend && npm start",
     "start:server": "cd server && npm start"
