@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div>
       <h1>React + Express + TypeScript</h1>
-      <p>Message from backend: {message}</p>
+      <p>Message from backend is: {message}</p>
     </div>
   );
 }
