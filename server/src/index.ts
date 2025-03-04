@@ -30,12 +30,13 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
 nextApp.prepare().then(() => {
   app.all("*", (req, res) => {
     return handle(req, res);
   });
 
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 });
