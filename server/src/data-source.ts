@@ -11,12 +11,13 @@ export const AppDataSource = new DataSource({
   port: 5432, 
   synchronize: false,
   logging: true,
+  ssl: true,
   extra: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false, 
-    },
-  },  entities: [Ride],
+   ssl: {
+      rejectUnauthorized: false
+    }
+  },
+  entities: [Ride],
   migrations: ["src/migrations/*.ts"],
 });
 
