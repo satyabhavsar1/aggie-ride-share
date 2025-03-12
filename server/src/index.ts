@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import next from "next";
 import pool from "./db"; 
+import { AppDataSource } from "./data-source";
+import rideRoutes from "./routes/rideRoutes";
+import "reflect-metadata";
 
 dotenv.config();
 
@@ -30,9 +33,6 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
 
 nextApp.prepare().then(() => {
   app.all("*", (req, res) => {
@@ -40,3 +40,15 @@ nextApp.prepare().then(() => {
   });
 
 });
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Database connected with TypeORM");
+
+    app.use("/api/rides", rideRoutes);
+
+    app.listen(5001, () => {
+      console.log("Server running on port 5001");
+    });
+  })
+  .catch((err) => console.error("Database connection failed:", err));
