@@ -33,21 +33,21 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Database connected");
 
-nextApp.prepare().then(() => {
-  app.all("*", (req, res) => {
-    return handle(req, res);
-  });
+    nextApp.prepare().then(() => {
+      app.all("*", (req, res) => {
+        return handle(req, res);
+      });
 
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  AppDataSource.initialize()
-    .then(() => {
-      console.log("Database connected");
-    })
-    .catch((err) => {
-      console.error("Database connection failed:", err);
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
     });
-});
+  })
+  .catch((err) => {
+    console.error("Database connection failed:", err);
+    process.exit(1); // Exit the process if the database connection fails
+  });
