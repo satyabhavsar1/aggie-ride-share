@@ -11,8 +11,11 @@ export const AppDataSource = new DataSource({
   port: 5432, 
   synchronize: false,
   logging: true,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false, 
-  entities: [Ride],
+  extra: {
+    ssl: {
+      rejectUnauthorized: false, 
+    },
+  },  entities: [Ride],
   migrations: ["src/migrations/*.ts"],
 });
 
