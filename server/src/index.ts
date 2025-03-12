@@ -47,8 +47,8 @@ AppDataSource.initialize()
 
     app.use("/api/rides", rideRoutes);
 
-    app.listen(5001, () => {
-      console.log("Server running on port 5001");
+    app.listen(PORT, () => {
+      console.log("Server running on port ", PORT);
     });
   })
   .catch((err) => console.error("Database connection failed:", err));
