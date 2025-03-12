@@ -13,13 +13,13 @@ export default function Home() {
     axios.get(`${API_BASE_URL}/api/message`) 
       .then(response => setMessage(response.data.message))
       .catch(error => console.error('Error fetching message:', error));
-  }, []);
+  }, [API_BASE_URL]);
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/test-db`) 
       .then(response => setData(response.data))
       .catch(error => console.error("API Test DB error:", error));
-  }, []);
+  }, [API_BASE_URL]);
 
   return (
     <div>
