@@ -41,14 +41,13 @@ nextApp.prepare().then(() => {
 
 });
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log("Database connected with TypeORM");
-
-    app.use("/api/rides", rideRoutes);
-
-    app.listen(PORT, () => {
-      console.log("Server running on port ", PORT);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  AppDataSource.initialize()
+    .then(() => {
+      console.log("Database connected");
+    })
+    .catch((err) => {
+      console.error("Database connection failed:", err);
     });
-  })
-  .catch((err) => console.error("Database connection failed:", err));
+});
