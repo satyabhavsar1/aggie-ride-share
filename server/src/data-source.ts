@@ -13,6 +13,7 @@ export const AppDataSource = new DataSource({
   logging: true,
   extra: {
     ssl: {
+      require: true,
       rejectUnauthorized: false, 
     },
   },  entities: [Ride],
