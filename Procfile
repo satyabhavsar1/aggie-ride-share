@@ -1,1 +1,1 @@
-web: npm run build && npm run start
+web: NODE_ENV=production node dist/index.js
