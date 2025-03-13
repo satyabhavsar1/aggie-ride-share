@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const start = Date.now();
   try {
+    console.log("api/routs post api called");
     const ride = RideRepository.create(req.body);
     const savedRide = await RideRepository.save(ride);
     const end = Date.now();
