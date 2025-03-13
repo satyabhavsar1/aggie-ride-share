@@ -10,7 +10,9 @@ export const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL,
   synchronize: false,  
   logging: true,
-  extra: { ssl: { rejectUnauthorized: false } },
+  extra: { ssl: { 
+    require: true,
+    rejectUnauthorized: false } },
   entities: [Ride],
   migrations: ["dist/migrations/*.js"], 
 });
