@@ -5,12 +5,16 @@ import { Ride } from "../entities/Ride";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
+  const start = Date.now();
   try {
     const ride = RideRepository.create(req.body);
     const savedRide = await RideRepository.save(ride);
+    const end = Date.now();
+    console.log(`Database operation took ${end - start}ms`);
     res.status(201).json(savedRide);
   } catch (error) {
     console.error("Error creating ride:", error);
+    res.status(500).json({ message: "Internal server error", error: error });
   }
 });
 
