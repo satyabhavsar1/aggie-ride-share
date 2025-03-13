@@ -7,7 +7,7 @@ dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  url: process.env.DATABASE_URL,
+  url: process.env.DATABASE_URL+"?sslmode=no-verify",
   synchronize: false,  
   logging: true,
   ssl: {
