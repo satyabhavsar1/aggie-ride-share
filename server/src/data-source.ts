@@ -10,10 +10,13 @@ export const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL,
   synchronize: false,  
   logging: true,
-  extra: process.env.NODE_ENV === "production"
-    ? { ssl: { rejectUnauthorized: false } }  
-    : {},
+  extra: { ssl: { rejectUnauthorized: false } },
   entities: [Ride],
-  migrations: ["dist/migrations/*.js"], // Use compiled JS migrations
+  migrations: ["dist/migrations/*.js"], 
 });
+
+console.log("🌍 Running in", process.env.NODE_ENV);
+
+console.log("SSL Config data-source.ts:", AppDataSource.options.extra);
+
 
