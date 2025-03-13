@@ -33,7 +33,6 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-console.log("SSL Config:", AppDataSource.options.extra);
 
 async function startServer() {
   try {
