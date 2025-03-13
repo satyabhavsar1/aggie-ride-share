@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "NODE_ENV=production node dist/index.js",
+    "start": "NODE_ENV=production node server/dist/index.js",
     "dev": "nodemon src/index.ts",
     "migrate": "npx ts-node src/migrations/createTables.ts"
   },
