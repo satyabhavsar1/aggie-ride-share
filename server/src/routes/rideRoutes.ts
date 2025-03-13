@@ -4,7 +4,7 @@ import { Ride } from "../entities/Ride";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/rides/", async (req, res) => {
   const start = Date.now();
   try {
     console.log("api/routs post api called");
@@ -19,23 +19,23 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/rides/", async (req, res) => {
   const rides = await RideRepository.find();
   res.json(rides);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/rides/:id", async (req, res) => {
   const ride = await RideRepository.findOneBy({ id: parseInt(req.params.id) });
   if (ride) res.json(ride);
   else res.status(404).json({ error: "Ride not found" });
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/rides/:id", async (req, res) => {
   await RideRepository.update(req.params.id, req.body);
   res.json({ message: "Ride updated successfully!" });
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/rides/:id", async (req, res) => {
   await RideRepository.delete(req.params.id);
   res.json({ message: "Ride deleted successfully!" });
 });
