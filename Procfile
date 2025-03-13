@@ -1,1 +1,1 @@
-web: cd frontend && next build && cd ../server && npm run build && node dist/index.js
+web: NODE_ENV=production npm run build && cd .. && npm run start
