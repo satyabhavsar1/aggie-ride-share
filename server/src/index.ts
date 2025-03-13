@@ -35,21 +35,24 @@ app.get("/api/test-db", async (req, res) => {
 
 console.log("SSL Config:", AppDataSource.options.extra);
 
-AppDataSource.initialize()
-  .then(() => {
+async function startServer() {
+  try {
+    await AppDataSource.initialize();
     console.log("Database connected");
-
-    nextApp.prepare().then(() => {
-      app.all("*", (req, res) => {
-        return handle(req, res);
-      });
-
-      app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-      });
+    
+    await nextApp.prepare();
+    
+    app.all("*", (req, res) => {
+      return handle(req, res);
     });
-  })
-  .catch((err) => {
-    console.error("Database connection failed:", err);
-    process.exit(1); // Exit the process if the database connection fails
-  });
+    
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Startup error:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
