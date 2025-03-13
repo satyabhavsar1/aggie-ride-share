@@ -8,19 +8,12 @@ dotenv.config();
 export const AppDataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
-  port: 5432, 
-  synchronize: false,
+  synchronize: false,  
   logging: true,
-  ssl: true,
-  extra: {
-   ssl: {
-      rejectUnauthorized: false
-    }
-  },
+  extra: process.env.NODE_ENV === "production"
+    ? { ssl: { rejectUnauthorized: false } }  
+    : {},
   entities: [Ride],
-  migrations: ["src/migrations/*.ts"],
+  migrations: ["dist/migrations/*.js"], // Use compiled JS migrations
 });
 
-AppDataSource.initialize()
-  .then(() => console.log("✅ Database connected successfully! 🎉"))
-  .catch((err) => console.error("❌ Database connection error:", err));
