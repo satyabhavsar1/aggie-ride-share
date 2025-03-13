@@ -33,6 +33,7 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+app.use("/api", rideRoutes);
 
 async function startServer() {
   try {
