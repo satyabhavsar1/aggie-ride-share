@@ -9,7 +9,7 @@ import {
 import { Ride } from "./Ride";
   
   
-  @Entity()
+  @Entity({ name: "users" })
   export class User {
     @PrimaryGeneratedColumn()
       id!: number;
