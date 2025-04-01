@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import { Ride } from "./entities/Ride";
+import { User } from "./entities/User";
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
   extra: {
     ssl: true
   },
-  entities: [Ride],
+  entities: [User,Ride],
   migrations: ["dist/migrations/*.js"], 
 });
 

@@ -1,9 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne } from "typeorm";
+import { User } from "./User";
 
 @Entity()
 export class Ride {
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @ManyToOne(() => User, (user) => user.rides, { eager: true }) 
+  user!: User;
 
   @Column()
   user_id!: string;
@@ -43,4 +47,5 @@ export class Ride {
 
   @Column("bigint")
   whatsapp_number!: number;
+
 }

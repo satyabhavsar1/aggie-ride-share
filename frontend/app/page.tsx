@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import CreateRide from "./components/CreateRide";
 
 export default function Home() {
   const [message, setMessage] = useState("");
@@ -26,7 +25,6 @@ export default function Home() {
       <h1>React + Express + TypeScript</h1>
       <p>Message from backend is: {message || "Loading..."}</p>
       <p>Test DB response: {JSON.stringify(data) || "No data received"}</p>
-      <CreateRide/>
     </div>
   );
 }
