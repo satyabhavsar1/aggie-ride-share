@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import { Ride } from "./entities/Ride";
 import { User } from "./entities/User";
+import { City } from "./entities/City";
 
 dotenv.config();
 

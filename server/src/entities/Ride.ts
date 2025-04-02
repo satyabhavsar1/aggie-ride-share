@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { User } from "./User";
+import { City } from "./City";
 
 @Entity()
 export class Ride {
@@ -36,16 +37,15 @@ export class Ride {
   @Column("int")
   num_seats!: number;
 
-  @Column("text")
-  city_from!: string;
+  @ManyToOne(() => City, { eager: true }) 
+  city_from!: City;
 
-  @Column("text")
-  city_to!: string;
+  @ManyToOne(() => City, { eager: true }) 
+  city_to!: City;
 
   @Column("bigint")
   contact_number!: number;
 
   @Column("bigint")
   whatsapp_number!: number;
-
 }
