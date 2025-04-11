@@ -7,6 +7,7 @@ import { AppDataSource } from "./data-source";
 import rideRoutes from "./routes/rideRoutes";
 import authRoutes from "./routes/authRoutes";
 import "reflect-metadata";
+import cityRoutes from "./routes/cityRoutes";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.get("/api/test-db", async (req, res) => {
 
 app.use("/api", rideRoutes);
 app.use("/api", authRoutes);
+app.use("/api", cityRoutes);
 
 async function startServer() {
   try {

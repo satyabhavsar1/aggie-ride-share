@@ -7,6 +7,7 @@ import {
     OneToMany,
   } from "typeorm";
 import { Ride } from "./Ride";
+import { RideRequest } from "./RideRequest";
   
   
   @Entity({ name: "users" })
@@ -20,6 +21,9 @@ import { Ride } from "./Ride";
     @Column()
       lastName!: string;
   
+    @Column()
+      contactNumber!: string;
+
     @Column()
       passwordHash!: string;
   
@@ -40,5 +44,9 @@ import { Ride } from "./Ride";
   
     @CreateDateColumn()
       tokenExpirationDate!: Date;
+
+    @OneToMany(() => RideRequest, (request) => request.requester)
+      rideRequests!: RideRequest[];
+      
   }
   

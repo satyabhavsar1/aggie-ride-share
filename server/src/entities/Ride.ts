@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 import { User } from "./User";
 import { City } from "./City";
+import { RideRequest } from "./RideRequest";
 
 @Entity()
 export class Ride {
@@ -48,4 +49,8 @@ export class Ride {
 
   @Column("bigint")
   whatsapp_number!: number;
+
+  @OneToMany(() => RideRequest, (request) => request.ride)
+  requests!: RideRequest[];
+
 }

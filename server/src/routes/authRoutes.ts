@@ -24,7 +24,7 @@ router.post(
       return;
     }
 
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, contactNumber } = req.body;
     try {
       const existingUser = await UserRepository.findOne({ where: { email } });
       if (existingUser) {
@@ -33,7 +33,7 @@ router.post(
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = UserRepository.create({ firstName, lastName, email, passwordHash: hashedPassword });
+      const newUser = UserRepository.create({ firstName, lastName, email, passwordHash: hashedPassword, contactNumber: contactNumber });
       await UserRepository.save(newUser);
 
        res.status(201).json({ message: "User registered successfully" });
@@ -76,7 +76,7 @@ router.post(
 
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
 
-    res.json({ token, user: { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email } });
+    res.json({ token, user: { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, contactNumber: user.contactNumber } });
     return;
     } catch (error) {
       console.error("Error logging in user:", error);

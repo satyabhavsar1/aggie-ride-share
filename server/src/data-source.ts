@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { Ride } from "./entities/Ride";
 import { User } from "./entities/User";
 import { City } from "./entities/City";
+import { RideRequest } from "./entities/RideRequest";
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
   extra: {
     ssl: true
   },
-  entities: [User,Ride, City],
+  entities: [User,Ride, City, RideRequest],
   migrations: ["dist/migrations/*.js"], 
 });
 

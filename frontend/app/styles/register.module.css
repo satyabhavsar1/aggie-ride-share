@@ -1,4 +1,4 @@
-.login_container {
+.register_container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,12 +17,12 @@
   color: #333; 
 }
 
-.login_form {
+.register_form {
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 100%;
-  max-width: 300px; 
+  max-width: 400px; 
   background-color: white;
   padding: 20px;
   border-radius: 8px;

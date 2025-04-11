@@ -1,86 +1,128 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import styles from "../styles/createride.module.css"
+import { useUser } from "../context/UserContext";
+import { Sidebar } from "../components/SideNavBar";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/"; 
-;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
 export default function CreateRide() {
-
   const router = useRouter();
 
+  const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
+  const { user } = useUser();
+
+
   const [formData, setFormData] = useState({
-    user_id: "user123",
-    date: "2025-03-06",
+    date: getTodayDate(),
     time: "14:30:00",
     pickups: ["Location A"],
     drops: ["Location B"],
     cost: 20,
-    drop_date: "2025-03-06",
+    drop_date: getTodayDate(),
     drop_time: "16:00:00",
     num_seats: 4,
-    city_from: "City A",
-    city_to: "City B",
-    contact_number: 1234567890,
+    city_from: "",
+    city_to: "",
+    contact_number: user.contact,
     whatsapp_number: 1234567890,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/cities`);
+        setCities(response.data);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+    fetchCities();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await axios.post(`${API_BASE_URL}/api/rides`, formData);
+      const userId = localStorage.getItem("userid");
+      if (!userId) {
+        alert("User not logged in!");
+        return;
+      }
+  
+      const updatedFormData = {
+        ...formData,
+        user_id: userId, 
+      };
+      await axios.post(`${API_BASE_URL}/api/rides`, updatedFormData);
       alert("Ride added successfully!");
-      router.push("/"); 
+      router.push("/fetchrides");
     } catch (error) {
       console.error("Error creating ride:", error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Create a Ride</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-medium">From</label>
-            <input
-              type="text"
-              placeholder="Enter city"
+    <div className={styles.background}>
+      <Sidebar />
+
+      <form onSubmit={handleSubmit} className={styles.ride_form}>
+      <h4>Create Ride</h4>
+
+      <div className={styles.input_group}>
+      <label htmlFor="From" className={styles.label}>From:</label>
+      <select
               value={formData.city_from}
               onChange={(e) => handleChange(e, "city_from")}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+            >
+              <option value="">Select City</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium">To</label>
-            <input
-              type="text"
-              placeholder="Enter destination"
+          <div className={styles.input_group}>
+          <label htmlFor="To" className={styles.label}>To:</label>
+            <select
               value={formData.city_to}
               onChange={(e) => handleChange(e, "city_to")}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+            >
+              <option value="">Select City</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-medium">Date</label>
+          <div className={styles.input_group}>
+          <label htmlFor="Date" className={styles.label}>Date:</label>
               <input
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleChange(e, "date")}
                 className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium">Time</label>
+          <div className={styles.input_group}>
+          <label htmlFor="Time" className={styles.label}>Time:</label>
               <input
                 type="time"
                 value={formData.time}
@@ -90,8 +132,8 @@ export default function CreateRide() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium">Cost ($)</label>
+          <div className={styles.input_group}>
+          <label htmlFor="Cost" className={styles.label}>Cost:</label>
             <input
               type="number"
               placeholder="Enter cost per seat"
@@ -102,8 +144,8 @@ export default function CreateRide() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-medium">Seats Available</label>
+          <div className={styles.input_group}>
+          <label htmlFor="Seats" className={styles.label}>Seats Available:</label>
               <input
                 type="number"
                 placeholder="Enter number of seats"
@@ -112,8 +154,8 @@ export default function CreateRide() {
                 className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div>
-              <label className="block text-gray-700 font-medium">Contact Number</label>
+            <div className={styles.input_group}>
+          <label htmlFor="Contact" className={styles.label}>Contact Number:</label>
               <input
                 type="tel"
                 placeholder="Enter phone number"
@@ -126,12 +168,11 @@ export default function CreateRide() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+            className={styles.submit_button}
           >
-            Submit Ride
+            Create
           </button>
         </form>
       </div>
-    </div>
   );
 }

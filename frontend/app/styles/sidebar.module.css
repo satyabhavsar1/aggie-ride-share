@@ -1,0 +1,47 @@
+.toggle_menu {
+    position: fixed;
+    z-index: 7;
+    top: -90px;
+    left: -90px;
+    height: 180px;
+    width: 180px;
+    background: url(../public/logos/burger.svg) no-repeat;
+    background-size: 30% 30%;
+    background-position: 80% 80%;
+    border-radius: 90px;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+  }
+
+  .link_container {
+    display: flex;
+    align-items: center;
+    padding-left: 2vw;
+    transition: background-color 0.3s ease;
+  }
+  
+  .link_container:hover {
+    background-color: #00000033;
+  }
+
+  
+  .link {
+    color: #648fd9;
+    font-size: 24px;
+    height: 60px;
+    line-height: 60px;
+    font-weight: 400;
+    vertical-align: middle;
+    cursor: pointer;
+    font-family: "Segoe UI";
+  }
+  
+  .link.active {
+    font-style: italic;
+    color: #0f55cf;
+    font-weight: 500;
+    text-decoration: underline;
+  }
+  
+  
+  

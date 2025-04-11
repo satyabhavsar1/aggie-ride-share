@@ -4,11 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "../styles/login.module.css"; 
+import { showNotification } from "@mantine/notifications";
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
   const router = useRouter(); 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { setUser } = useUser();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -16,19 +19,37 @@ const Login = () => {
       const response = await axios.post("/api/auth/login", { email, password });
       if (response.status === 200) {
         const userid = response.data.user.id; 
-        localStorage.setItem("userid", userid);
-        router.push(`/listrides`);
+        setUser(response.data.user);
+        router.push(`/searchrides`);
       } else {
-        console.error("Login failed");
+        showNotification({
+          id: "login",
+          title: "Error",
+          message: "Invalid credentials",
+          color: "red",
+          autoClose: 5000,
+        });
       }
     } catch (error) {
-      console.error("Error:", error);
+      showNotification({
+        id: "login",
+        title: "Error",
+        message: "Invalid credentials",
+        color: "red",
+        autoClose: 5000,
+      });
+      console.log("error in login", error);
     }
   };
+
+  const register = () => {
+    router.push("/register");
+  }
 
   return (
     <div className={styles.login_container}>
       <form onSubmit={handleSubmit} className={styles.login_form}>
+        <h4>Welcome to Aggie Ride Share!</h4>
         <div className={styles.input_group}>
           <label htmlFor="email" className={styles.label}>Email:</label>
           <input
@@ -57,6 +78,10 @@ const Login = () => {
 
         <button type="submit" className={styles.submit_button}>
           Login
+        </button>
+        <p> New member? Register</p>
+        <button type="submit" className={styles.submit_button} onClick={register}>
+          Register
         </button>
       </form>
     </div>
