@@ -18,7 +18,6 @@ const Login = () => {
     try {
       const response = await axios.post("/api/auth/login", { email, password });
       if (response.status === 200) {
-        const userid = response.data.user.id; 
         setUser(response.data.user);
         router.push(`/searchrides`);
       } else {

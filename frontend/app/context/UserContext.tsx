@@ -1,5 +1,4 @@
 "use client"
-import { useRouter } from "next/router";
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 interface User {
@@ -54,7 +53,4 @@ export const useUser = (): UserContextType => {
   }
   return context;
 };
-function userRouter() {
-  throw new Error("Function not implemented.");
-}
 

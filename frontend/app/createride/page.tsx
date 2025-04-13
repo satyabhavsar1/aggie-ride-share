@@ -33,7 +33,7 @@ export default function CreateRide() {
     num_seats: 4,
     city_from: "",
     city_to: "",
-    contact_number: user.contact,
+    contact_number: user ? user.contactNumber : "",
     whatsapp_number: 1234567890,
   });
 

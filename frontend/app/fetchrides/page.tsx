@@ -17,6 +17,10 @@ function FetchRides () {
     const fetchRides = async () => {
       try {
         const storedUser = localStorage.getItem("user");
+        if (!storedUser) {
+          console.error("No user found in localStorage");
+          return;
+        }
         const user = JSON.parse(storedUser);
         const userid = user.id;
         const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`);
