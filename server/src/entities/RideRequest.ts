@@ -24,5 +24,9 @@ import {
   
     @Column({ default: "pending" }) 
     status!: string;
+
+    @Column() 
+    num_seats_requested!: number;
+
   }
   

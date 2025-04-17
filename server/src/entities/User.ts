@@ -45,6 +45,12 @@ import { RideRequest } from "./RideRequest";
     @CreateDateColumn()
       tokenExpirationDate!: Date;
 
+    @Column({ default: false })
+    isVerified!: boolean;
+    
+    @Column({ nullable: true })
+    verificationCode!: string;
+
     @OneToMany(() => RideRequest, (request) => request.requester)
       rideRequests!: RideRequest[];
       

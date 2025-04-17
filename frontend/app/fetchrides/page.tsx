@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import styles from "../styles/fetchrides.module.css"
 import { Ride } from "../components/types";
 import { Sidebar } from "../components/SideNavBar";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
-  
 function FetchRides () {
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +62,7 @@ function FetchRides () {
         )}
       <button type="submit" onClick={handleCreate} className={styles.fab}>
           Create Ride
-    </button>
+      </button>
     </div>
   );
 }

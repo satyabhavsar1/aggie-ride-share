@@ -33,7 +33,6 @@ export default function SearchRides() {
     try {
       const res = await axios.get(`/api/rides/search?fromCity=${fromCity}&toCity=${toCity}&date=${formattedDate}`);
       setRides(res.data);
-      console.log(res.data);
       setSearched(true);
   
     } catch (error) {

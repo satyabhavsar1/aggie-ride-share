@@ -2,51 +2,42 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import styles from "../styles/login.module.css"; 
 import { showNotification } from "@mantine/notifications";
-import { useUser } from "../context/UserContext";
 
-const Login = () => {
+const Verify = () => {
   const router = useRouter(); 
   const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const { setUser } = useUser();
+  const [code, setCode] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await axios.post("/api/auth/verify", { email, code });
       if (response.status === 200) {
-        setUser(response.data.user);
-        router.push(`/searchrides`);
+        router.push(`/login`);
       } else {
         showNotification({
-          id: "login",
+          id: "verify",
           title: "Error",
-          message: response.data.message,
+          message: "Invalid Verification Code or Email",
           color: "red",
           autoClose: 5000,
         });
       }
     } catch (error) {
-        const errorDetails = error as AxiosError;
-        const backendMessage = errorDetails.response?.data as { message?: string };
-      
       showNotification({
-        id: "login",
+        id: "verify",
         title: "Error",
-        message: backendMessage.message,
+        message: "Invalid Verification Code or Email",
         color: "red",
         autoClose: 5000,
-      });
-      console.log("error in login", error);
+    });
+    console.error("Error in verify: ",error);
     }
   };
 
-  const register = () => {
-    router.push("/register");
-  }
 
   return (
     <div className={styles.login_container}>
@@ -66,25 +57,24 @@ const Login = () => {
         </div>
         
         <div className={styles.input_group}>
-          <label htmlFor="password" className={styles.label}>Password:</label>
+          <label htmlFor="code" className={styles.label}>Verification Code:</label>
           <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            id="code"
+            type="code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
             required
             className={styles.input}
-            placeholder="Enter your password"
+            placeholder="Enter your verification code"
           />
         </div>
 
-        <button type="submit" className={styles.submit_button}>
-          Login
+        <button type="submit" className={styles.submit_button} onClick={handleSubmit}>
+          Verify
         </button>
-        <p> New member? <a style= {{color: "blue"}} onClick={register}>Register </a> </p>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Verify;

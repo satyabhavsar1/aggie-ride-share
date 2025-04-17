@@ -6,8 +6,11 @@ import { useUser } from '../context/UserContext';
 
 function Sidebar() {
     const [opened, setOpened] = useState<boolean>(false);
-    const { logout } = useUser();
-     
+    const {setUser} = useUser();
+    const logout = () => {
+        setUser(null);
+        localStorage.removeItem('user');
+    }
     return (
         <>
             <Drawer position='left' opened={opened}
@@ -22,13 +25,17 @@ function Sidebar() {
                 <Link href={'/createride'} className={styles.link}>Create Ride </Link>
                 </div>
                 <div className={styles.link_container}>
-                <Link href={'/fetchrides'} className={styles.link}>Rides Requested </Link>
+                <Link href={'/upcomingrides'} className={styles.link}>Upcoming Ride </Link>
+                </div>
+
+                <div className={styles.link_container}>
+                <Link href={'/requestedrides'} className={styles.link}>Rides Requested </Link>
                 </div>
                 <div className={styles.link_container}>
                 <Link href={'/fetchrides'} className={styles.link}>Pending Ride Requests </Link>
                 </div>
                 <div className={styles.link_container}>
-                <a onClick={logout} className={styles.link}>Logout </a>
+                <Link href={'/'} className={styles.link} onClick={logout}>Logout </Link>
                 </div>
 
 

@@ -8,6 +8,7 @@ import rideRoutes from "./routes/rideRoutes";
 import authRoutes from "./routes/authRoutes";
 import "reflect-metadata";
 import cityRoutes from "./routes/cityRoutes";
+import rideRequestRoutes from "./routes/rideRequestRoutes";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.get("/api/test-db", async (req, res) => {
 app.use("/api", rideRoutes);
 app.use("/api", authRoutes);
 app.use("/api", cityRoutes);
+app.use("/api", rideRequestRoutes);
 
 async function startServer() {
   try {

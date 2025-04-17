@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import styles from "../styles/register.module.css"
 
 export default function Register() {
@@ -32,10 +32,12 @@ export default function Register() {
       } else {
         alert("Registration failed!");
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (error ) {
+        const errorDetails = error as AxiosError;
+        const backendMessage = errorDetails.response?.data as { message?: string };
+        alert(backendMessage.message || "Something went wrong");
     }
-  };
+    };
 
   return (
 <div className={styles.register_container}>
