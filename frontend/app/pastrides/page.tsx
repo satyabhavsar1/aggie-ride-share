@@ -9,12 +9,12 @@ import { Sidebar } from "../components/SideNavBar";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
   
-function UpcomingRides () {
-  const [upcomingRidesAsRider, setUpcomingRidesAsRider] = useState([]);
-  const [upcomingRidesAsDriver, setUpcomingRidesAsDriver] = useState([]);
+function PastRides () {
+  const [pastRidesAsRider, setPastRidesAsRider] = useState([]);
+  const [pastRidesAsDriver, setPastRidesAsDriver] = useState([]);
 
   useEffect(() => {
-    const fetchUpcomingRides = async () => {
+    const fetchPastRides = async () => {
       try {
         const storedUser = localStorage.getItem("user");
         if (!storedUser) {
@@ -23,15 +23,15 @@ function UpcomingRides () {
         }
         const user = JSON.parse(storedUser);
         const userid = user.id;
-        const response = await axios.get(`${API_BASE_URL}/api/rideRequests/requester/${userid}`);
+        const response = await axios.get(`${API_BASE_URL}/api/rideRequests/${userid}`);
         const acceptedRides = response.data.filter( (ele: RequestedRide) => (ele.status==="accepted" ));
-        setUpcomingRidesAsRider(acceptedRides);
+        setPastRidesAsRider(acceptedRides);
       } catch (err) {
         console.error("Error fetching rides:", err);
       } 
     };
 
-    const fetchUpcomingCreatedRides = async() => {
+    const fetchPastCreatedRides = async() => {
         try {
             const storedUser = localStorage.getItem("user");
             if (!storedUser) {
@@ -42,41 +42,41 @@ function UpcomingRides () {
             const userid = user.id;
             const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`);
             const yourRides = response.data;
-            setUpcomingRidesAsDriver(yourRides);
+            setPastRidesAsDriver(yourRides);
           } catch (err) {
             console.error("Error fetching rides:", err);
           } 
     }
-    fetchUpcomingRides();
-    fetchUpcomingCreatedRides();
+    fetchPastCreatedRides();
+    fetchPastRides();
   }, []);
 
   return (
     <div className={styles.background}>
       <Sidebar />
 
-        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Upcoming Rides As Rider</h2>
-        {upcomingRidesAsRider.length === 0 ? (
-          <p className="text-center text-gray-500">You do not have any upcoming Rides</p>
+        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Past Rides As Rider</h2>
+        {pastRidesAsRider.length === 0 ? (
+          <p className="text-center text-gray-500">You do not have any past Rides</p>
         ) : (
           <div className={styles.ride_card}>
-            {upcomingRidesAsRider.map((ride: RequestedRide) => (
+            {pastRidesAsRider.map((ride: RequestedRide) => (
               <div key={ride.id} className={styles.ride_item}>
                 <p className="font-semibold text-lg">{ride.ride.city_from.name} → {ride.ride.city_to.name}</p>
                 <p className="text-gray-700">Date: {ride.ride.date} | Time: {ride.ride.time}</p>
-                <p className="text-gray-700">Seats Booked: {ride.num_seats_requested}</p>
+                <p className="text-gray-700">Seats Books: {ride.num_seats_requested}</p>
                 <p className="text-gray-700">Cost: ${ride.ride.cost} per seat</p>
                 <p className="text-gray-700">Contact: {ride.ride.contact_number}</p>
               </div>
             ))}
           </div>
         )}
-        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Upcoming Rides As Driver</h2>
-        {upcomingRidesAsDriver.length === 0 ? (
-          <p className="text-center text-gray-500">You do not have any upcoming Rides</p>
+        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Past Rides As Driver</h2>
+        {pastRidesAsDriver.length === 0 ? (
+          <p className="text-center text-gray-500">You do not have any past Rides</p>
         ) : (
           <div className={styles.ride_card}>
-            {upcomingRidesAsDriver.map((ride: Ride) => (
+            {pastRidesAsDriver.map((ride: Ride) => (
               <div key={ride.id} className={styles.ride_item}>
                 <p className="font-semibold text-lg">{ride.city_from.name} → {ride.city_to.name}</p>
                 <p className="text-gray-700">Date: {ride.date} | Time: {ride.time}</p>
@@ -92,4 +92,4 @@ function UpcomingRides () {
   );
 }
 
-export default UpcomingRides;
+export default PastRides;

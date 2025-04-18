@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "../components/SideNavBar";
 import styles from '../styles/global.module.css'
 import { RequestedRide } from "../components/types";
+import { showNotification } from "@mantine/notifications";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
@@ -19,14 +20,32 @@ export default function RequestedRides() {
             }
             const user = JSON.parse(storedUser);
             const userid = user.id;
-            const response = await axios.get(`${API_BASE_URL}/api/rideRequests/${userid}`);
+            const response = await axios.get(`${API_BASE_URL}/api/rideRequests/requester/${userid}`);
             setRequestedRides(response.data);
+            console.log("ride requests. ", response.data);
           } catch (err) {
             console.error("Error fetching rides:", err);
           } 
         };
         fetchRequestedRides();
       }, []);
+
+      const handleCancel = async (requestId: number) => {
+        try{
+          const response = await axios.delete(`${API_BASE_URL}/api/rideRequests/${requestId}`);
+          if(response.status===200){
+            showNotification({
+                      id: "cancelRequest",
+                      title: "Success",
+                      message: response.data.message,
+                      color: "green",
+                      autoClose: 5000,
+                    });
+          }
+        } catch (err) {
+          console.error("Error cancelling ride request:", err);
+        } 
+      }
     
     return (
     <div className={styles.background}>
@@ -45,7 +64,7 @@ export default function RequestedRides() {
                 <p className="text-gray-700">Cost: ${ride.ride.cost} per seat</p>
                 <p className="text-gray-700">Contact: {ride.ride.contact_number}</p>
                 <p className="text-gray-700">Status: {ride.status}</p>
-
+                <button className={styles.submit_button} onClick={()=> handleCancel(ride.id)}>Cancel Request</button>
                 </div>
             ))}
             </div>

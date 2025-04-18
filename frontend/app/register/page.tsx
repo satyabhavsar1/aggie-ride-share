@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import styles from "../styles/register.module.css"
+import { showNotification } from "@mantine/notifications";
 
 export default function Register() {
   const router = useRouter();
@@ -27,15 +28,35 @@ export default function Register() {
       });
       
       if (response.status == 201) {
-        alert("Registration successful!");
-        router.push("/login"); 
+        showNotification({
+          id: "registration",
+          title: "Success",
+          message: 'Registration Successful. Please verify your email.',
+          color: "green",
+          autoClose: 5000,
+        });
+        router.push("/verify"); 
       } else {
-        alert("Registration failed!");
+        
+        showNotification({
+          id: "registration",
+          title: "Error",
+          message: 'Registration Failed',
+          color: "red",
+          autoClose: 5000,
+        });
       }
     } catch (error ) {
         const errorDetails = error as AxiosError;
         const backendMessage = errorDetails.response?.data as { message?: string };
-        alert(backendMessage.message || "Something went wrong");
+        showNotification({
+          id: "registration",
+          title: "Error",
+          message: backendMessage.message || "Something went wrong",
+          color: "red",
+          autoClose: 5000,
+        });
+
     }
     };
 

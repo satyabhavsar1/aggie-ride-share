@@ -3,6 +3,7 @@ import axios from "axios";
 import {Ride} from "../components/types"
 import styles from "../styles/searchrides.module.css"
 import { useState } from "react";
+import { showNotification } from "@mantine/notifications";
 
 interface Props {
     rides: Ride[];
@@ -44,11 +45,30 @@ function ListRides (props: Props) {
       });
 
       if (response.status === 201) {
-        alert("Ride Requested!");
+        showNotification({
+            id: "request",
+            title: "Success",
+            message: 'Ride Requested',
+            color: "green",
+            autoClose: 5000,
+          });
       } else {
-        alert("Unable to request Ride!");
+        showNotification({
+          id: "request",
+          title: "Error",
+          message: 'Unable to Request Ride',
+          color: "red",
+          autoClose: 5000,
+        });
       }
     } catch (error) {
+      showNotification({
+        id: "request",
+        title: "Error",
+        message: 'Unable to Request Ride',
+        color: "red",
+        autoClose: 5000,
+      });
       console.error("Error:", error);
     }
   };

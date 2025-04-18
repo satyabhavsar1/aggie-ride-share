@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import styles from "../styles/createride.module.css"
 import { useUser } from "../context/UserContext";
 import { Sidebar } from "../components/SideNavBar";
+import { showNotification } from "@mantine/notifications";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
@@ -13,7 +14,9 @@ export default function CreateRide() {
   const router = useRouter();
 
   const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
-
+  const [showNewCityFromInput, setShowNewCityFromInput] = useState(false);
+  const [showNewCityToInput, setShowNewCityToInput] = useState(false);
+  
   const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split("T")[0];
@@ -33,6 +36,8 @@ export default function CreateRide() {
     num_seats: 4,
     city_from: "",
     city_to: "",
+    newCityFrom: "",
+    newCityTo: "",  
     contact_number: user ? user.contactNumber : "",
     whatsapp_number: 1234567890,
   });
@@ -50,26 +55,59 @@ export default function CreateRide() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
-    setFormData({ ...formData, [field]: e.target.value });
+    const value = e.target.value;
+  
+    if (field === "city_from" && value === "new") {
+      setShowNewCityFromInput(true);
+      setFormData({ ...formData, city_from: "", newCityFrom: "" });
+    } else if (field === "city_to" && value === "new") {
+      setShowNewCityToInput(true);
+      setFormData({ ...formData, city_to: "", newCityTo: "" });
+    } else {
+      setFormData({ ...formData, [field]: value });
+    }
   };
+  
 
+  const createCity = async (name: string) => {
+    const res = await axios.post(`${API_BASE_URL}/api/cities`, { name });
+    return res.data.id; 
+  };
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const userId = localStorage.getItem("userid");
-      if (!userId) {
-        alert("User not logged in!");
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        console.error("No user found in localStorage");
         return;
       }
-  
+      const user = JSON.parse(storedUser);
+      const userId = user.id;
+
       const updatedFormData = {
         ...formData,
-        user_id: userId, 
+        user_id: userId,
+        user: { id: userId }
       };
       await axios.post(`${API_BASE_URL}/api/rides`, updatedFormData);
-      alert("Ride added successfully!");
+        showNotification({
+          id: "request",
+          title: "Success",
+          message: 'Ride Created Successfully',
+          color: "green",
+          autoClose: 5000,
+        });
       router.push("/fetchrides");
     } catch (error) {
+      showNotification({
+        id: "request",
+        title: "Error",
+        message: 'Error Creating Ride',
+        color: "red",
+        autoClose: 5000,
+      });
+
       console.error("Error creating ride:", error);
     }
   };

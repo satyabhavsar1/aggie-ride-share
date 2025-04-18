@@ -5,8 +5,15 @@ const router = express.Router();
 
 router.post("/rides/", async (req, res) => {
   try {
-    const ride = RideRepository.create(req.body);
-    const savedRide = await RideRepository.save(ride);
+    const { user, ...rideData } = req.body;
+    console.log("user: ", user);
+    console.log("rideData", rideData);
+    const newRide = RideRepository.create({
+      ...rideData,
+      user,
+    });
+
+    const savedRide = await RideRepository.save(newRide);
     res.status(201).json(savedRide);
     return;
   } catch (error) {
@@ -45,8 +52,6 @@ router.get("/rides/search", async (req, res) => {
 router.get("/rides/", async (req, res) => {
   try{
     const rides = await RideRepository.find();
-    console.log(" rides ", rides);
-
     res.json(rides);
   }
   catch (error) {
@@ -59,7 +64,6 @@ router.get("/rides/", async (req, res) => {
 router.get("/ride/:id", async (req, res) => {
   try{
     const ride = await RideRepository.findOneBy({ id: parseInt(req.params.id) });
-    console.log(" rides id", ride);
 
     if (ride) res.json(ride);
     else res.status(404).json({ error: "Ride not found" });
@@ -72,8 +76,9 @@ router.get("/ride/:id", async (req, res) => {
 
 router.get("/rides/:userid", async (req, res) => {
   try{
+    console.log("userid: ",req.params.userid  );
     const rides = await RideRepository.findBy({ user_id: req.params.userid });
-    console.log("userid rides ", rides);
+    console.log('rides: ', rides);
     if (rides) res.json(rides);
     else res.status(404).json({ error: "Ride not found" });
   } catch (error) {

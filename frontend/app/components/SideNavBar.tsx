@@ -32,7 +32,7 @@ function Sidebar() {
                 <Link href={'/requestedrides'} className={styles.link}>Rides Requested </Link>
                 </div>
                 <div className={styles.link_container}>
-                <Link href={'/fetchrides'} className={styles.link}>Pending Ride Requests </Link>
+                <Link href={'/pendingrequests'} className={styles.link}>Pending Ride Requests </Link>
                 </div>
                 <div className={styles.link_container}>
                 <Link href={'/'} className={styles.link} onClick={logout}>Logout </Link>
