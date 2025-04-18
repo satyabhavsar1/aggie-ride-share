@@ -100,7 +100,7 @@ router.put("/rideRequests/:requestId", async (req, res) => {
     const { requestId } = req.params;
     const { status, num_seats_requested } = req.body;
 
-    const validStatuses = ["pending", "accepted", "rejected"];
+    const validStatuses = ["pending", "accepted", "declined"];
     if (!validStatuses.includes(status)) {
       res.status(400).json({ message: "Invalid status value." });
       return;

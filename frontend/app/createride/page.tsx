@@ -71,33 +71,56 @@ export default function CreateRide() {
 
   const createCity = async (name: string) => {
     const res = await axios.post(`${API_BASE_URL}/api/cities`, { name });
+    console.log('res.data.id',res.data.id);
     return res.data.id; 
   };
   
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
+      let cityFromId = formData.city_from;
+      let cityToId = formData.city_to;
+  
+      if (showNewCityFromInput && formData.newCityFrom) {
+        cityFromId = await createCity(formData.newCityFrom);
+        console.log("cityToId", cityToId);
+        console.log("cityFromId", cityFromId);
+  
+      }
+  
+      if (showNewCityToInput && formData.newCityTo) {
+        cityToId = await createCity(formData.newCityTo);
+        console.log("cityToId", cityToId);
+        console.log("cityFromId", cityFromId);
+  
+      }
+  
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
         console.error("No user found in localStorage");
         return;
       }
+  
       const user = JSON.parse(storedUser);
       const userId = user.id;
 
       const updatedFormData = {
         ...formData,
+        city_from: cityFromId,
+        city_to: cityToId,
         user_id: userId,
         user: { id: userId }
       };
+  
       await axios.post(`${API_BASE_URL}/api/rides`, updatedFormData);
-        showNotification({
-          id: "request",
-          title: "Success",
-          message: 'Ride Created Successfully',
-          color: "green",
-          autoClose: 5000,
-        });
+      showNotification({
+        id: "request",
+        title: "Success",
+        message: 'Ride Created Successfully',
+        color: "green",
+        autoClose: 5000,
+      });
+  
       router.push("/fetchrides");
     } catch (error) {
       showNotification({
@@ -107,11 +130,10 @@ export default function CreateRide() {
         color: "red",
         autoClose: 5000,
       });
-
       console.error("Error creating ride:", error);
     }
   };
-
+  
   return (
     <div className={styles.background}>
       <Sidebar />
@@ -132,7 +154,17 @@ export default function CreateRide() {
                   {city.name}
                 </option>
               ))}
+              <option value="new">Other (Add New City)</option>
             </select>
+            {showNewCityFromInput && (
+              <input
+                type="text"
+                placeholder="Enter new city name"
+                value={formData.newCityFrom}
+                onChange={(e) => setFormData({ ...formData, newCityFrom: e.target.value })}
+                className="..."
+              />
+            )}
           </div>
 
           <div className={styles.input_group}>
@@ -148,7 +180,17 @@ export default function CreateRide() {
                   {city.name}
                 </option>
               ))}
+              <option value="new">Other (Add New City)</option>
             </select>
+            {showNewCityToInput && (
+              <input
+                type="text"
+                placeholder="Enter new city name"
+                value={formData.newCityTo}
+                onChange={(e) => setFormData({ ...formData, newCityTo: e.target.value })}
+                className="..."
+              />
+            )}
           </div>
 
           <div className={styles.input_group}>
