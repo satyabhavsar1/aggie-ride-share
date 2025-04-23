@@ -20,11 +20,11 @@ export class Ride {
   @Column({ type: "time" })
   time!: string;
 
-  @Column("text", { array: true }) 
-  pickups!: string[];
+  @Column() 
+  pickup!: string;
 
-  @Column("text", { array: true })
-  drops!: string[];
+  @Column()
+  drop!: string;
 
   @Column("decimal")
   cost!: number;
@@ -45,7 +45,7 @@ export class Ride {
   city_to!: City;
 
   @Column("bigint")
-  contact_number!: number;
+  contactNumber!: number;
 
   @Column("bigint")
   whatsapp_number!: number;

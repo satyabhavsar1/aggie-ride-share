@@ -83,10 +83,11 @@ function ListRides (props: Props) {
             {props.rides.map((ride: Ride) => (
               <div key={ride.id} className={styles.ride_item}>
                 <p className="font-semibold text-lg">{ride.city_from.name} → {ride.city_to.name}</p>
+                <p className="text-gray-700"> Pickup and Drop: {ride.pickup} → {ride.drop}</p>
                 <p className="text-gray-700">Date: {ride.date} | Time: {ride.time}</p>
                 <p className="text-gray-700">Seats Available: {ride.num_seats}</p>
                 <p className="text-gray-700">Cost: ${ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.contact_number}</p>
+                <p className="text-gray-700">Contact: {ride.contactNumber}</p>
                 <div className="mt-2">
                 <label className="mr-2">Select number of seats:</label>
                 <select
@@ -103,14 +104,14 @@ function ListRides (props: Props) {
                 <div>
                   
                 <button
-                  onClick={() => handleContactClick(ride.contact_number, ride.city_from.name, ride.city_to.name)}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"
+                  onClick={() => handleContactClick(ride.contactNumber, ride.city_from.name, ride.city_to.name)}
+                  className={styles.submit_button}
                 >
                   Contact
                 </button>
                 <button
                   onClick={() => handleRequestRide(ride.id)}
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"
+                  className={styles.submit_button}
                 >
                   Request Ride
                 </button>

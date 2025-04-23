@@ -24,7 +24,9 @@ function UpcomingRides () {
         const user = JSON.parse(storedUser);
         const userid = user.id;
         const response = await axios.get(`${API_BASE_URL}/api/rideRequests/requester/${userid}`);
-        const acceptedRides = response.data.filter( (ele: RequestedRide) => (ele.status==="accepted" ));
+        const acceptedRides = response.data
+          .filter((ele: RequestedRide) => ele.status === "accepted")
+          .filter((ele: RequestedRide) => new Date(ele.ride.date) > new Date());
         setUpcomingRidesAsRider(acceptedRides);
       } catch (err) {
         console.error("Error fetching rides:", err);
@@ -40,8 +42,10 @@ function UpcomingRides () {
             }
             const user = JSON.parse(storedUser);
             const userid = user.id;
-            const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`);
-            const yourRides = response.data;
+            const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`)
+            console.log("response: ", response);
+            const yourRides = response.data
+            .filter((ele: Ride) => new Date(ele.date) > new Date());
             setUpcomingRidesAsDriver(yourRides);
           } catch (err) {
             console.error("Error fetching rides:", err);
@@ -66,7 +70,7 @@ function UpcomingRides () {
                 <p className="text-gray-700">Date: {ride.ride.date} | Time: {ride.ride.time}</p>
                 <p className="text-gray-700">Seats Booked: {ride.num_seats_requested}</p>
                 <p className="text-gray-700">Cost: ${ride.ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.ride.contact_number}</p>
+                <p className="text-gray-700">Contact: {ride.ride.contactNumber}</p>
               </div>
             ))}
           </div>
@@ -79,10 +83,11 @@ function UpcomingRides () {
             {upcomingRidesAsDriver.map((ride: Ride) => (
               <div key={ride.id} className={styles.ride_item}>
                 <p className="font-semibold text-lg">{ride.city_from.name} → {ride.city_to.name}</p>
+                <p className="text-gray-700"> Pickup and Drop: {ride.pickup} → {ride.drop}</p>
                 <p className="text-gray-700">Date: {ride.date} | Time: {ride.time}</p>
                 <p className="text-gray-700">Seats Remaining: {ride.num_seats}</p>
                 <p className="text-gray-700">Cost: ${ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.contact_number}</p>
+                <p className="text-gray-700">Contact: {ride.contactNumber}</p>
               </div>
             ))}
           </div>

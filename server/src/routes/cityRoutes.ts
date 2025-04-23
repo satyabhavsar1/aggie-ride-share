@@ -1,13 +1,11 @@
 import express from "express";
-import { City } from "../entities/City";
-import { AppDataSource } from "../data-source";
-import { CityRepository } from "../repositories/CityRepository";
+import { cityRepository } from "../repositories/CityRepository";
 
 const router = express.Router();
 
 router.get("/cities/", async (_req, res) => {
     try {
-        const cities = await AppDataSource.getRepository(City).find();
+        const cities = await cityRepository.find();
         res.json(cities);
         return;
     } catch (error) {
@@ -20,8 +18,8 @@ router.get("/cities/", async (_req, res) => {
 router.post("/cities/", async (req, res) => {
     try {
         const name = req.body;
-        const newCity = await CityRepository.create(name);
-        const savedCity = await CityRepository.save(newCity);
+        const newCity = await cityRepository.create(name);
+        const savedCity = await cityRepository.save(newCity);
         res.status(201).json(savedCity);
         return;
     } catch (error) {
@@ -31,5 +29,5 @@ router.post("/cities/", async (req, res) => {
     }
 });
 
-
+  
 export default router;

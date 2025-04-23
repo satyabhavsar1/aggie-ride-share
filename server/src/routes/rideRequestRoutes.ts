@@ -1,7 +1,7 @@
 import express from "express";
-import { RideRequestRepository } from "../repositories/RideRequestRepository";
-import { UserRepository } from "../repositories/UserRepository";
-import { RideRepository } from "../repositories/RideRepository";
+import { rideRequestRepository } from "../repositories/RideRequestRepository";
+import { userRepository } from "../repositories/UserRepository";
+import { rideRepository } from "../repositories/RideRepository";
 import { RideRequest } from "../entities/RideRequest";
 
 const router = express.Router();
@@ -9,8 +9,8 @@ const router = express.Router();
 router.post("/rideRequests/", async (req, res) => {
     try {
         const { userId, rideId, numSeats } = req.body;
-        const user = await UserRepository.findOneBy({ id: userId });
-        const ride = await RideRepository.findOneBy({ id: rideId });
+        const user = await userRepository.findOneBy({ id: userId });
+        const ride = await rideRepository.findOneBy({ id: rideId });
     
         if (!user || !ride) {
           res.status(404).json({ message: "User or Ride not found" });
@@ -23,7 +23,7 @@ router.post("/rideRequests/", async (req, res) => {
         rideRequest.status = "pending";
         rideRequest.num_seats_requested = numSeats;
     
-        await RideRequestRepository.save(rideRequest);
+        await rideRequestRepository.save(rideRequest);
     
         res.status(201).json(rideRequest);
         return;
@@ -37,7 +37,7 @@ router.post("/rideRequests/", async (req, res) => {
 
 router.get("/rideRequests/requester/:userid", async (req, res) => {
   try{
-    const rideRequests = await RideRequestRepository.find({
+    const rideRequests = await rideRequestRepository.find({
         where: {
           requester: {
             id: parseInt(req.params.userid) , 
@@ -56,7 +56,7 @@ router.get("/rideRequests/requester/:userid", async (req, res) => {
 
 router.get("/rideRequests/:userid", async (req, res) => {
   try {
-    const rideRequests = await RideRequestRepository.find({
+    const rideRequests = await rideRequestRepository.find({
       where: {
         ride: {
           user: {
@@ -77,14 +77,14 @@ router.get("/rideRequests/:userid", async (req, res) => {
 router.delete("/rideRequests/:requestId", async (req, res) => {
       const { requestId } = req.params;
       try {
-        const request = await RideRequestRepository.findOneBy({ id: parseInt(requestId) });
+        const request = await rideRequestRepository.findOneBy({ id: parseInt(requestId) });
     
         if (!request) {
           res.status(404).json({ message: "Ride request not found" });
           return;
         }
     
-        await RideRequestRepository.remove(request);
+        await rideRequestRepository.remove(request);
         res.status(200).json({ message: "Ride request cancelled successfully" });
         return;
       } catch (error) {
@@ -106,7 +106,7 @@ router.put("/rideRequests/:requestId", async (req, res) => {
       return;
     }
 
-    const rideRequest = await RideRequestRepository.findOne({
+    const rideRequest = await rideRequestRepository.findOne({
       where: { id: parseInt(requestId) },
       relations: ["ride", "requester"],
     });
@@ -120,8 +120,8 @@ router.put("/rideRequests/:requestId", async (req, res) => {
   
 
     rideRequest.status = status;
-    await RideRequestRepository.save(rideRequest);
-    await RideRepository.save(ride);
+    await rideRequestRepository.save(rideRequest);
+    await rideRepository.save(ride);
     res.json(rideRequest);
   } catch (error) {
     console.error("Error updating ride request status:", error);

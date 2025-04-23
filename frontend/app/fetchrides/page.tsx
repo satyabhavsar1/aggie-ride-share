@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import styles from "../styles/fetchrides.module.css"
 import { Ride } from "../components/types";
 import { Sidebar } from "../components/SideNavBar";
@@ -12,7 +11,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/"
 function FetchRides () {
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); 
+
   useEffect(() => {
     const fetchRides = async () => {
       try {
@@ -34,10 +33,6 @@ function FetchRides () {
     fetchRides();
   }, []);
 
-  const handleCreate= () =>{
-    router.push('/createride');
-    return;
-  }
   if (loading) return <p className="text-center text-gray-600">Loading rides...</p>;
 
   return (
@@ -52,17 +47,15 @@ function FetchRides () {
             {rides.map((ride: Ride) => (
               <div key={ride.id} className={styles.ride_item}>
                 <p className="font-semibold text-lg">{ride.city_from.name} → {ride.city_to.name}</p>
+                <p className="text-gray-700"> Pickup and Drop: {ride.pickup} → {ride.drop}</p>
                 <p className="text-gray-700">Date: {ride.date} | Time: {ride.time}</p>
                 <p className="text-gray-700">Seats Available: {ride.num_seats}</p>
                 <p className="text-gray-700">Cost: ${ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.contact_number}</p>
+                <p className="text-gray-700">Contact: {ride.contactNumber}</p>
               </div>
             ))}
           </div>
         )}
-      <button type="submit" onClick={handleCreate} className={styles.fab}>
-          Create Ride
-      </button>
     </div>
   );
 }

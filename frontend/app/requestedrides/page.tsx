@@ -22,7 +22,6 @@ export default function RequestedRides() {
             const userid = user.id;
             const response = await axios.get(`${API_BASE_URL}/api/rideRequests/requester/${userid}`);
             setRequestedRides(response.data);
-            console.log("ride requests. ", response.data);
           } catch (err) {
             console.error("Error fetching rides:", err);
           } 
@@ -59,10 +58,11 @@ export default function RequestedRides() {
             {requestedRides.map((ride: RequestedRide) => (
                 <div key={ride.id} className={styles.ride_item}>
                 <p className="font-semibold text-lg">{ride.ride.city_from.name} → {ride.ride.city_to.name}</p>
+                <p className="text-gray-700"> Pickup and Drop: {ride.ride.pickup} → {ride.ride.drop}</p>
                 <p className="text-gray-700">Date: {ride.ride.date} | Time: {ride.ride.time}</p>
                 <p className="text-gray-700">Seats Requested: {ride.num_seats_requested}</p>
                 <p className="text-gray-700">Cost: ${ride.ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.ride.contact_number}</p>
+                <p className="text-gray-700">Contact: {ride.ride.contactNumber}</p>
                 <p className="text-gray-700">Status: {ride.status}</p>
                 <button className={styles.submit_button} onClick={()=> handleCancel(ride.id)}>Cancel Request</button>
                 </div>

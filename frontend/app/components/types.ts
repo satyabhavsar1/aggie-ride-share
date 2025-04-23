@@ -3,15 +3,15 @@ export interface Ride {
     user_id: number;
     city_from: City;
     city_to: City;
-    pickups: string[];
-    drops: string[];
+    pickup: string;
+    drop: string;
     date: string;
     time: string;
     drop_date: string;
     drop_time:string;
     num_seats: number;
     cost: number;
-    contact_number: string;
+    contactNumber: string;
     whatsapp_number:  string;
   }
 
@@ -19,10 +19,15 @@ export interface User {
   id: number;
   firstName: string;
   lastName: string;
-  contact_number: string;
+  contactNumber: string;
   email: string;
 }
 export interface City {
+  id: number;
+  name: string;
+}
+
+export interface Spot {
   id: number;
   name: string;
 }

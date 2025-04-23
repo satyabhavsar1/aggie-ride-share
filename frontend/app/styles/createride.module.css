@@ -11,11 +11,11 @@
 .ride_form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 5px;
     width: 100%;
     max-width: 400px; 
     background-color: white;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -27,12 +27,12 @@
   
 .label {
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     color: #333; 
 }
 
 .input {
-    padding: 10px;
+    padding: 5px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -45,7 +45,7 @@
 }
   
 .submit_button {
-    padding: 10px;
+    padding: 5px;
     background-color: #7f9fc4;
     color: white;
     width: fit-content;

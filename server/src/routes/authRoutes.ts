@@ -2,15 +2,13 @@ import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
-import { User } from "../entities/User";
-import { AppDataSource } from "../data-source";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { userRepository } from "../repositories/UserRepository";
 
 dotenv.config();
 
 const router = express.Router();
-const UserRepository = AppDataSource.getRepository(User);
 
 export const sendVerificationEmail = async (email: string, code: string) => {
   const transporter = nodemailer.createTransport({
@@ -52,7 +50,7 @@ router.post(
         return;
       }
     
-      const existingUser = await UserRepository.findOne({ where: { email } });
+      const existingUser = await userRepository.findOne({ where: { email } });
       if (existingUser) {
          res.status(400).json({ message: "User already exists" });
          return;
@@ -62,8 +60,8 @@ router.post(
       const hashedCode = await bcrypt.hash(code, saltRounds);
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = UserRepository.create({ firstName, lastName, email, isVerified: false,verificationCode:hashedCode, passwordHash: hashedPassword, contactNumber: contactNumber });
-      await UserRepository.save(newUser);
+      const newUser = userRepository.create({ firstName, lastName, email, isVerified: false,verificationCode:hashedCode, passwordHash: hashedPassword, contactNumber: contactNumber });
+      await userRepository.save(newUser);
       
       await sendVerificationEmail(email, code);
 
@@ -79,7 +77,7 @@ router.post(
 
 router.post('/auth/verify' , [], async (req: Request, res: Response) => {
   const { email, code } = req.body;
-  const user = await UserRepository.findOne({ where: { email } });
+  const user = await userRepository.findOne({ where: { email } });
   if(!user) {
     res.status(400).json({ message: "Invalid code" });
     return;
@@ -92,7 +90,7 @@ router.post('/auth/verify' , [], async (req: Request, res: Response) => {
   }
 
   user.isVerified = true;
-  await UserRepository.save(user);
+  await userRepository.save(user);
 
   res.status(200).json({ message: "Email verified successfully" });
   return;
@@ -115,7 +113,7 @@ router.post(
     const { email, password } = req.body;
 
     try {
-      const user = await UserRepository.findOne({ where: { email } });
+      const user = await userRepository.findOne({ where: { email } });
       if (!user) {
         res.status(400).json({ message: "Invalid credentials" });
         return;

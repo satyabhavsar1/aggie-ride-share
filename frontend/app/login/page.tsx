@@ -40,7 +40,7 @@ const Login = () => {
         color: "red",
         autoClose: 5000,
       });
-      console.log("error in login", error);
+      console.error("error in login", error);
     }
   };
 

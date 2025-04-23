@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Spot } from "./Spot";
 
 
 @Entity()
@@ -9,4 +10,8 @@ export class City {
 
     @Column()
     name!:string;
+    
+    @OneToMany(() => Spot, (spot) => spot.city)
+    spots!: Spot[];
+    
 }

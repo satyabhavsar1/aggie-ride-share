@@ -16,6 +16,10 @@ export default function CreateRide() {
   const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
   const [showNewCityFromInput, setShowNewCityFromInput] = useState(false);
   const [showNewCityToInput, setShowNewCityToInput] = useState(false);
+  const [pickupSpots, setPickupSpots] = useState<{ id: number; name: string }[]>([]);
+  const [dropSpots, setDropSpots] = useState<{ id: number; name: string }[]>([]);
+  const [showCustomPickupInput, setShowCustomPickupInput] = useState(false);
+  const [showCustomDropInput, setShowCustomDropInput] = useState(false);
   
   const getTodayDate = () => {
     const today = new Date();
@@ -28,8 +32,8 @@ export default function CreateRide() {
   const [formData, setFormData] = useState({
     date: getTodayDate(),
     time: "14:30:00",
-    pickups: ["Location A"],
-    drops: ["Location B"],
+    pickup: "Location A",
+    drop: "Location B",
     cost: 20,
     drop_date: getTodayDate(),
     drop_time: "16:00:00",
@@ -38,7 +42,7 @@ export default function CreateRide() {
     city_to: "",
     newCityFrom: "",
     newCityTo: "",  
-    contact_number: user ? user.contactNumber : "",
+    contactNumber: user ? user.contactNumber : "",
     whatsapp_number: 1234567890,
   });
 
@@ -54,26 +58,118 @@ export default function CreateRide() {
     fetchCities();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
+  useEffect(() => {
+    const fetchPickupSpots = async () => {
+      if (!formData.city_from || formData.city_from === "new") return;
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/spots/${formData.city_from}`);
+        setPickupSpots(res.data);
+      } catch (err) {
+        console.error("Error fetching pickup spots:", err);
+      }
+    };
+    fetchPickupSpots();
+  }, [formData.city_from]);
+  
+  useEffect(() => {
+    const fetchDropSpots = async () => {
+
+      if (!formData.city_to || formData.city_to === "new") return;
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/spots/${formData.city_to}`);
+        setDropSpots(res.data);
+      } catch (err) {
+        console.error("Error fetching drop spots:", err);
+      }
+    };
+    fetchDropSpots();
+  }, [formData.city_to]);
+  
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    field: keyof typeof formData
+  ) => {
     const value = e.target.value;
   
-    if (field === "city_from" && value === "new") {
-      setShowNewCityFromInput(true);
-      setFormData({ ...formData, city_from: "", newCityFrom: "" });
-    } else if (field === "city_to" && value === "new") {
-      setShowNewCityToInput(true);
-      setFormData({ ...formData, city_to: "", newCityTo: "" });
-    } else {
-      setFormData({ ...formData, [field]: value });
+    if (field === "pickup") {
+      console.log("here: ", field);
+      if (value === "other") {
+        setShowCustomPickupInput(true);
+      } else {
+        setShowCustomPickupInput(false);
+        setFormData({ ...formData, pickup: value});
+      }
+      return;
     }
+  
+    if (field === "drop") {
+      if (value === "other") {
+        setShowCustomDropInput(true);
+      } else {
+        setShowCustomDropInput(false);
+        setFormData({ ...formData, drop: value });
+      }
+      return;
+    }
+  
+    if (field === "city_from") {
+      if (value === "new") {
+        setShowNewCityFromInput(true);
+        setFormData({
+          ...formData,
+          city_from: "",
+          pickup: "",
+        });
+      } else {
+        setShowNewCityFromInput(false);
+        setFormData({
+          ...formData,
+          city_from: value,
+          pickup: "",
+        });
+      }
+      setShowCustomPickupInput(false); 
+      return;
+    }
+  
+    if (field === "city_to") {
+      if (value === "new") {
+        setShowNewCityToInput(true);
+        setFormData({
+          ...formData,
+          city_to: "",
+          drop: "", 
+        });
+      } else {
+        setShowNewCityToInput(false);
+        setFormData({
+          ...formData,
+          city_to: value,
+          drop: "", 
+        });
+      }
+      setShowCustomDropInput(false); 
+      return;
+    }
+   
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+      
+  const createCity = async (name: string) => {
+    const res = await axios.post(`${API_BASE_URL}/api/cities`, { name });
+    return res.data.id; 
+  };
+
+  const createSpot = async (name: string, city_id: string) => {
+    const res = await axios.post(`${API_BASE_URL}/api/spots/${city_id}`, { name });
+    return res.data.id; 
   };
   
 
-  const createCity = async (name: string) => {
-    const res = await axios.post(`${API_BASE_URL}/api/cities`, { name });
-    console.log('res.data.id',res.data.id);
-    return res.data.id; 
-  };
   
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -83,17 +179,20 @@ export default function CreateRide() {
   
       if (showNewCityFromInput && formData.newCityFrom) {
         cityFromId = await createCity(formData.newCityFrom);
-        console.log("cityToId", cityToId);
-        console.log("cityFromId", cityFromId);
-  
       }
   
       if (showNewCityToInput && formData.newCityTo) {
         cityToId = await createCity(formData.newCityTo);
-        console.log("cityToId", cityToId);
-        console.log("cityFromId", cityFromId);
-  
       }
+
+      if(showCustomPickupInput && formData.pickup) {
+        await createSpot( formData.pickup, cityFromId);
+      }
+
+      if(showCustomDropInput && formData.drop) {
+        await createSpot( formData.drop, cityToId);
+      }
+
   
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
@@ -146,7 +245,7 @@ export default function CreateRide() {
       <select
               value={formData.city_from}
               onChange={(e) => handleChange(e, "city_from")}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              
             >
               <option value="">Select City</option>
               {cities.map((city) => (
@@ -166,13 +265,36 @@ export default function CreateRide() {
               />
             )}
           </div>
+          <div className={styles.input_group}>
+            <label className={styles.label}>Pickup Spot:</label>
+            <select
+              value={formData.pickup}
+              onChange={(e) => handleChange(e, "pickup")}
+              
+            >
+              <option value="">Select Pickup Spot</option>
+              {pickupSpots.map((spot) => (
+                <option key={spot.id} value={spot.name}>{spot.name}</option>
+              ))}
+              <option value="other">Other (Enter Spot)</option>
+            </select>
+            {showCustomPickupInput && (
+              <input
+                type="text"
+                placeholder="Enter custom pickup spot"
+                value={formData.pickup || ""}
+                onChange={(e) => setFormData({ ...formData, pickup: e.target.value })}
+                className="mt-2 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+        </div>
 
           <div className={styles.input_group}>
           <label htmlFor="To" className={styles.label}>To:</label>
             <select
               value={formData.city_to}
               onChange={(e) => handleChange(e, "city_to")}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              
             >
               <option value="">Select City</option>
               {cities.map((city) => (
@@ -192,6 +314,29 @@ export default function CreateRide() {
               />
             )}
           </div>
+          <div className={styles.input_group}>
+            <label className={styles.label}>Drop Spot:</label>
+              <select
+                value={formData.drop}
+                onChange={(e) => handleChange(e, "drop")}
+                
+              >
+                <option value="">Select Drop Spot</option>
+                {dropSpots.map((spot) => (
+                  <option key={spot.id} value={spot.name}>{spot.name}</option>
+                ))}
+                <option value="other">Other (Enter Spot)</option>
+              </select>
+            {showCustomDropInput && (
+              <input
+                type="text"
+                placeholder="Enter custom drop spot"
+                value={formData.drop}
+                onChange={(e) => setFormData({ ...formData, drop: e.target.value })}
+                className="mt-2 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+          </div>
 
           <div className={styles.input_group}>
           <label htmlFor="Date" className={styles.label}>Date:</label>
@@ -199,7 +344,7 @@ export default function CreateRide() {
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleChange(e, "date")}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                
               />
           <div className={styles.input_group}>
           <label htmlFor="Time" className={styles.label}>Time:</label>
@@ -207,10 +352,11 @@ export default function CreateRide() {
                 type="time"
                 value={formData.time}
                 onChange={(e) => handleChange(e, "time")}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                
               />
             </div>
           </div>
+
 
           <div className={styles.input_group}>
           <label htmlFor="Cost" className={styles.label}>Cost:</label>
@@ -219,7 +365,7 @@ export default function CreateRide() {
               placeholder="Enter cost per seat"
               value={formData.cost}
               onChange={(e) => handleChange(e, "cost")}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              
             />
           </div>
 
@@ -231,7 +377,7 @@ export default function CreateRide() {
                 placeholder="Enter number of seats"
                 value={formData.num_seats}
                 onChange={(e) => handleChange(e, "num_seats")}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                
               />
             </div>
             <div className={styles.input_group}>
@@ -239,9 +385,9 @@ export default function CreateRide() {
               <input
                 type="tel"
                 placeholder="Enter phone number"
-                value={formData.contact_number}
-                onChange={(e) => handleChange(e, "contact_number")}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={formData.contactNumber}
+                onChange={(e) => handleChange(e, "contactNumber")}
+                
               />
             </div>
           </div>

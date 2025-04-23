@@ -10,6 +10,7 @@
 
   .submit_button {
     padding: 10px;
+    margin: 2px;
     background-color: #7f9fc4;
     color: white;
     width: fit-content;
@@ -19,7 +20,46 @@
     cursor: pointer;
     align-self: center;
   }
+
+
+  .accept_button {
+    padding: 10px;
+    margin: 2px;
+    background-color: rgb(52, 140, 77);
+    color: white;
+    width: fit-content;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+
+  .decline_button {
+    padding: 10px;
+    margin: 2px;
+    background-color: rgb(188, 75, 75);
+    color: white;
+    width: fit-content;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .button_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
   
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 2vh;
+    margin: 2vh;
+  }
   .ride-card {
     margin-top: 1rem;
     padding: 1rem;
