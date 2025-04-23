@@ -43,7 +43,6 @@ function UpcomingRides () {
             const user = JSON.parse(storedUser);
             const userid = user.id;
             const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`)
-            console.log("response: ", response);
             const yourRides = response.data
             .filter((ele: Ride) => new Date(ele.date) > new Date());
             setUpcomingRidesAsDriver(yourRides);

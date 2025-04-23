@@ -53,7 +53,6 @@ function RideRequests() {
   }, [dateFilter, statusFilter, allRequests]);
 
   const handleContactClick = (contactNumber: string, from: string, to: string) => {
-    console.log("contact number of requester ", contactNumber);
     const message = encodeURIComponent(`Hello, I see you are interested in the ride from ${from} to ${to}. I wanted to know some details.`);
     const smsUrl = `sms:${contactNumber}?body=${message}`;
     window.location.href = smsUrl;
