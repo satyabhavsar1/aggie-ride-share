@@ -106,7 +106,7 @@ function RideRequests() {
     <div className={styles.background}>
       <Sidebar />
 
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Pending Requests for you</h2>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Ride Requests for you</h2>
 
       <div className={styles.filters}>
         <input
