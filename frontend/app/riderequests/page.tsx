@@ -6,6 +6,7 @@ import styles from "../styles/fetchrides.module.css";
 import { RequestedRide } from "../components/types";
 import { Sidebar } from "../components/SideNavBar";
 import { showNotification } from "@mantine/notifications";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
@@ -14,15 +15,14 @@ function RideRequests() {
   const [requests, setRequests] = useState<RequestedRide[]>([]);
   const [dateFilter, setDateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const { user } = useUser();
 
   const fetchAllRequests = async () => {
     try {
-      const storedUser = localStorage.getItem("user");
-      if (!storedUser) {
+      if (!user) {
         console.error("No user found in localStorage");
         return;
       }
-      const user = JSON.parse(storedUser);
       const userid = user.id;
       const response = await axios.get(`${API_BASE_URL}/api/rideRequests/${userid}`);
       const allRequests = response.data;
@@ -36,7 +36,7 @@ function RideRequests() {
 
   useEffect(() => {
     fetchAllRequests();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let filtered = allRequests;

@@ -5,6 +5,7 @@ import axios from "axios";
 import styles from "../styles/fetchrides.module.css"
 import { RequestedRide, Ride } from "../components/types";
 import { Sidebar } from "../components/SideNavBar";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
@@ -12,16 +13,16 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/"
 function PastRides () {
   const [pastRidesAsRider, setPastRidesAsRider] = useState([]);
   const [pastRidesAsDriver, setPastRidesAsDriver] = useState([]);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchPastRides = async () => {
       try {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) {
+
+        if (!user) {
           console.error("No user found in localStorage");
           return;
         }
-        const user = JSON.parse(storedUser);
         const userid = user.id;
         const response = await axios.get(`${API_BASE_URL}/api/rideRequests/${userid}`);
         const acceptedRides = response.data.filter( (ele: RequestedRide) => (ele.status==="accepted" ));
@@ -33,12 +34,10 @@ function PastRides () {
 
     const fetchPastCreatedRides = async() => {
         try {
-            const storedUser = localStorage.getItem("user");
-            if (!storedUser) {
+            if (!user) {
               console.error("No user found in localStorage");
               return;
             }
-            const user = JSON.parse(storedUser);
             const userid = user.id;
             const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`);
             const yourRides = response.data;
@@ -49,10 +48,12 @@ function PastRides () {
     }
     fetchPastCreatedRides();
     fetchPastRides();
-  }, []);
+  }, [user]);
 
   return (
     <div className={styles.background}>
+      {user? (
+        <>
       <Sidebar />
 
         <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Past Rides As Rider</h2>
@@ -88,7 +89,9 @@ function PastRides () {
             ))}
           </div>
         )}
-
+        </>):(
+        <p>Not logged in</p>
+      )}
     </div>
   );
 }

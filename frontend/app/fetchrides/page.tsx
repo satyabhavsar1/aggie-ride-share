@@ -5,22 +5,22 @@ import axios from "axios";
 import styles from "../styles/fetchrides.module.css"
 import { Ride } from "../components/types";
 import { Sidebar } from "../components/SideNavBar";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
 function FetchRides () {
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) {
-          console.error("No user found in localStorage");
+        if (!user) {
+          console.error("localStorage");
           return;
         }
-        const user = JSON.parse(storedUser);
         const userid = user.id;
         const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`);
         setRides(response.data);
@@ -31,12 +31,14 @@ function FetchRides () {
       }
     };
     fetchRides();
-  }, []);
+  }, [user]);
 
   if (loading) return <p className="text-center text-gray-600">Loading rides...</p>;
 
   return (
     <div className={styles.background}>
+      {user? (
+      <>
       <Sidebar />
 
         <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Rides</h2>
@@ -56,6 +58,9 @@ function FetchRides () {
             ))}
           </div>
         )}
+        </>):(
+        <p>Not logged in</p>
+      )}
     </div>
   );
 }

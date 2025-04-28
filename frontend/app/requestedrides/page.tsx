@@ -5,20 +5,21 @@ import { Sidebar } from "../components/SideNavBar";
 import styles from '../styles/global.module.css'
 import { RequestedRide } from "../components/types";
 import { showNotification } from "@mantine/notifications";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
 export default function RequestedRides() {
       const [requestedRides, setRequestedRides] = useState([]);
+      const { user } = useUser();
+      
       useEffect(() => {
         const fetchRequestedRides = async () => {
           try {
-            const storedUser = localStorage.getItem("user");
-            if (!storedUser) {
+            if (!user) {
               console.error("No user found in localStorage");
               return;
             }
-            const user = JSON.parse(storedUser);
             const userid = user.id;
             const response = await axios.get(`${API_BASE_URL}/api/rideRequests/requester/${userid}`);
             setRequestedRides(response.data);
@@ -27,7 +28,7 @@ export default function RequestedRides() {
           } 
         };
         fetchRequestedRides();
-      }, []);
+      }, [user]);
 
       const handleCancel = async (requestId: number) => {
         try{
@@ -48,6 +49,8 @@ export default function RequestedRides() {
     
     return (
     <div className={styles.background}>
+      {user? (
+        <>
         <Sidebar />
 
         <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Requested Rides</h2>
@@ -69,6 +72,9 @@ export default function RequestedRides() {
             ))}
             </div>
         )}
+        </>):(
+        <p>Not logged in</p>
+      )}
     </div>
     );
 

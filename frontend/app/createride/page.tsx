@@ -56,7 +56,7 @@ export default function CreateRide() {
       }
     };
     fetchCities();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const fetchPickupSpots = async () => {
@@ -69,7 +69,7 @@ export default function CreateRide() {
       }
     };
     fetchPickupSpots();
-  }, [formData.city_from]);
+  }, [formData.city_from, user]);
   
   useEffect(() => {
     const fetchDropSpots = async () => {
@@ -83,7 +83,7 @@ export default function CreateRide() {
       }
     };
     fetchDropSpots();
-  }, [formData.city_to]);
+  }, [formData.city_to, user]);
   
 
   const handleChange = (
@@ -93,7 +93,6 @@ export default function CreateRide() {
     const value = e.target.value;
   
     if (field === "pickup") {
-      console.log("here: ", field);
       if (value === "other") {
         setShowCustomPickupInput(true);
       } else {
@@ -193,22 +192,17 @@ export default function CreateRide() {
         await createSpot( formData.drop, cityToId);
       }
 
-  
-      const storedUser = localStorage.getItem("user");
-      if (!storedUser) {
+      if (!user) {
         console.error("No user found in localStorage");
         return;
       }
   
-      const user = JSON.parse(storedUser);
-      const userId = user.id;
-
       const updatedFormData = {
         ...formData,
         city_from: cityFromId,
         city_to: cityToId,
-        user_id: userId,
-        user: { id: userId }
+        user_id: user.id,
+        user: { id: user.id }
       };
   
       await axios.post(`${API_BASE_URL}/api/rides`, updatedFormData);
@@ -234,7 +228,10 @@ export default function CreateRide() {
   };
   
   return (
+    
     <div className={styles.background}>
+      {user? (
+        <>
       <Sidebar />
 
       <form onSubmit={handleSubmit} className={styles.ride_form}>
@@ -398,7 +395,10 @@ export default function CreateRide() {
           >
             Create
           </button>
-        </form>
+        </form> 
+        </>):(
+        <p>Not logged in</p>
+      )}
       </div>
   );
 }

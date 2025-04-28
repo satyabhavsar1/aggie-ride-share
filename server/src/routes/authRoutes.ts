@@ -68,7 +68,7 @@ router.post(
        res.status(201).json({ message: "User registered successfully" });
        return;
     } catch (error) {
-      console.log("error", error);
+      console.error( error);
        res.status(500).json({ message: "Internal server error" });
        return;
     }
@@ -130,9 +130,19 @@ router.post(
         return;
       }
 
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
-
-    res.json({ token, user: { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, contactNumber: user.contactNumber } });
+      const token = jwt.sign(
+        {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          contactNumber: user.contactNumber,
+        },
+        process.env.JWT_SECRET as string,
+        { expiresIn: "1h" }
+      );
+      
+      res.json({ token, user: { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, contactNumber: user.contactNumber } });
     return;
     } catch (error) {
       console.error("Error logging in user:", error);

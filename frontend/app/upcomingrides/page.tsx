@@ -5,6 +5,7 @@ import axios from "axios";
 import styles from "../styles/fetchrides.module.css"
 import { RequestedRide, Ride } from "../components/types";
 import { Sidebar } from "../components/SideNavBar";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/";
 
@@ -12,16 +13,15 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/"
 function UpcomingRides () {
   const [upcomingRidesAsRider, setUpcomingRidesAsRider] = useState([]);
   const [upcomingRidesAsDriver, setUpcomingRidesAsDriver] = useState([]);
-
+  const { user } = useUser();
+  
   useEffect(() => {
     const fetchUpcomingRides = async () => {
       try {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) {
+        if (!user) {
           console.error("No user found in localStorage");
           return;
         }
-        const user = JSON.parse(storedUser);
         const userid = user.id;
         const response = await axios.get(`${API_BASE_URL}/api/rideRequests/requester/${userid}`);
         const acceptedRides = response.data
@@ -35,12 +35,10 @@ function UpcomingRides () {
 
     const fetchUpcomingCreatedRides = async() => {
         try {
-            const storedUser = localStorage.getItem("user");
-            if (!storedUser) {
+            if (!user) {
               console.error("No user found in localStorage");
               return;
             }
-            const user = JSON.parse(storedUser);
             const userid = user.id;
             const response = await axios.get(`${API_BASE_URL}/api/rides/${userid}`)
             const yourRides = response.data
@@ -52,7 +50,7 @@ function UpcomingRides () {
     }
     fetchUpcomingRides();
     fetchUpcomingCreatedRides();
-  }, []);
+  }, [user]);
 
   return (
     <div className={styles.background}>

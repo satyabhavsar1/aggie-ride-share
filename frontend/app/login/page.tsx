@@ -18,6 +18,9 @@ const Login = () => {
     try {
       const response = await axios.post("/api/auth/login", { email, password });
       if (response.status === 200) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        console.log("user setting:", response.data.user);
         setUser(response.data.user);
         router.push(`/searchrides`);
       } else {
