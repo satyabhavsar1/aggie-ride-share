@@ -54,43 +54,55 @@ function UpcomingRides () {
 
   return (
     <div className={styles.background}>
+      {user ? (
+      <>
       <Sidebar />
+      <div className={styles.container}>
+        <div className={styles.section}>
+          <h2 className={styles.heading}>Your Upcoming Rides As Rider</h2>
+          {upcomingRidesAsRider.length === 0 ? (
+            <p className={styles.noRides}>You do not have any upcoming Rides</p>
+          ) : (
+            <div className={styles.ride_card}>
+              {upcomingRidesAsRider.map((ride: RequestedRide) => (
+                <div key={ride.id} className={styles.ride_item}>
+                  <p className={styles.route}>{ride.ride.city_from.name} → {ride.ride.city_to.name}</p>
+                  <p> Pickup and Drop: {ride.ride.pickup} → {ride.ride.drop}</p>
+                  <p> Date: {ride.ride.date} | Time: {ride.ride.time}</p>
+                  <p> Seats Booked: {ride.num_seats_requested}</p>
+                  <p> Cost: ${ride.ride.cost} per seat</p>
+                  <p> Contact: {ride.ride.contactNumber}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Upcoming Rides As Rider</h2>
-        {upcomingRidesAsRider.length === 0 ? (
-          <p className="text-center text-gray-500">You do not have any upcoming Rides</p>
-        ) : (
-          <div className={styles.ride_card}>
-            {upcomingRidesAsRider.map((ride: RequestedRide) => (
-              <div key={ride.id} className={styles.ride_item}>
-                <p className="font-semibold text-lg">{ride.ride.city_from.name} → {ride.ride.city_to.name}</p>
-                <p className="text-gray-700">Date: {ride.ride.date} | Time: {ride.ride.time}</p>
-                <p className="text-gray-700">Seats Booked: {ride.num_seats_requested}</p>
-                <p className="text-gray-700">Cost: ${ride.ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.ride.contactNumber}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Your Upcoming Rides As Driver</h2>
-        {upcomingRidesAsDriver.length === 0 ? (
-          <p className="text-center text-gray-500">You do not have any upcoming Rides</p>
-        ) : (
-          <div className={styles.ride_card}>
-            {upcomingRidesAsDriver.map((ride: Ride) => (
-              <div key={ride.id} className={styles.ride_item}>
-                <p className="font-semibold text-lg">{ride.city_from.name} → {ride.city_to.name}</p>
-                <p className="text-gray-700"> Pickup and Drop: {ride.pickup} → {ride.drop}</p>
-                <p className="text-gray-700">Date: {ride.date} | Time: {ride.time}</p>
-                <p className="text-gray-700">Seats Remaining: {ride.num_seats}</p>
-                <p className="text-gray-700">Cost: ${ride.cost} per seat</p>
-                <p className="text-gray-700">Contact: {ride.contactNumber}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
+        <div className={styles.section}>
+          <h2 className={styles.heading}>Your Upcoming Rides As Driver</h2>
+          {upcomingRidesAsDriver.length === 0 ? (
+            <p className={styles.noRides}>You do not have any upcoming Rides</p>
+          ) : (
+            <div className={styles.ride_card}>
+              {upcomingRidesAsDriver.map((ride: Ride) => (
+                <div key={ride.id} className={styles.ride_item}>
+                  <p className={styles.route}>{ride.city_from.name} → {ride.city_to.name}</p>
+                  <p>Pickup and Drop: {ride.pickup} → {ride.drop}</p>
+                  <p>Date: {ride.date} | Time: {ride.time}</p>
+                  <p>Seats Remaining: {ride.num_seats}</p>
+                  <p>Cost: ${ride.cost} per seat</p>
+                  <p>Contact: {ride.contactNumber}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
     </div>
+    </>):(
+        <p>Not logged in</p>
+      )}
+  </div>
+
   );
 }
 

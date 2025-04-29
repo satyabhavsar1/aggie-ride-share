@@ -25,9 +25,11 @@ function Sidebar() {
                 <Link href={'/createride'} className={styles.link}>Create Ride </Link>
                 </div>
                 <div className={styles.link_container}>
-                <Link href={'/upcomingrides'} className={styles.link}>Upcoming Ride </Link>
+                <Link href={'/upcomingrides'} className={styles.link}>Upcoming Rides </Link>
                 </div>
-
+                <div className={styles.link_container}>
+                <Link href={'/pastrides'} className={styles.link}>Past Rides </Link>
+                </div>
                 <div className={styles.link_container}>
                 <Link href={'/requestedrides'} className={styles.link}>Rides Requested </Link>
                 </div>

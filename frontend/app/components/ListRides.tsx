@@ -4,6 +4,7 @@ import {Ride} from "../components/types"
 import styles from "../styles/searchrides.module.css"
 import { useState } from "react";
 import { showNotification } from "@mantine/notifications";
+import { useUser } from "../context/UserContext";
 
 interface Props {
     rides: Ride[];
@@ -14,7 +15,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/"
 function ListRides (props: Props) {
 
   const [seatSelections, setSeatSelections] = useState<Record<number, number>>({});
-
+  const {user} = useUser();
   const handleSeatChange = (rideId: number, seatCount: number) => {
     setSeatSelections((prev) => ({ ...prev, [rideId]: seatCount }));
   };
@@ -27,11 +28,10 @@ function ListRides (props: Props) {
 
   const handleRequestRide = async (ride_id: number) => {
     try {
-      const storedUser = localStorage.getItem("user");
-      if (!storedUser) {
+      if (!user) {
+        console.error("User not logged in");
         return;
       }
-      const user = JSON.parse(storedUser);
       const numSeats = seatSelections[ride_id] || 1;
 
       const data = {
