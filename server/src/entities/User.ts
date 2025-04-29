@@ -39,12 +39,6 @@ import { RideRequest } from "./RideRequest";
     @CreateDateColumn()
       registrationTime!: Date;
   
-    @Column({ nullable: true })
-      resetToken?: string;
-  
-    @CreateDateColumn()
-      tokenExpirationDate!: Date;
-
     @Column({ default: false })
     isVerified!: boolean;
     

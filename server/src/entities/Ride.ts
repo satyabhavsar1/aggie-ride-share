@@ -29,12 +29,6 @@ export class Ride {
   @Column("decimal")
   cost!: number;
 
-  @Column({ type: "date" })
-  drop_date!: string;
-
-  @Column({ type: "time" })
-  drop_time!: string;
-
   @Column("int")
   num_seats!: number;
 
@@ -46,9 +40,6 @@ export class Ride {
 
   @Column("bigint")
   contactNumber!: number;
-
-  @Column("bigint")
-  whatsapp_number!: number;
 
   @OneToMany(() => RideRequest, (request) => request.ride)
   requests!: RideRequest[];
