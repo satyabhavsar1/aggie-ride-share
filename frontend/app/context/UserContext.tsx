@@ -37,7 +37,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const decoded = jwtDecode<JwtPayload>(token);
         const isExpired = decoded.exp * 1000 < Date.now();
-        console.log(decoded);
         if (isExpired) {
           logout();
         } else {
@@ -60,7 +59,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useUser = (): UserContextType => {
   const context = React.useContext(UserContext);
-  console.log("context, ",context);
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }

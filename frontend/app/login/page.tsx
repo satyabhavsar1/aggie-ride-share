@@ -20,7 +20,6 @@ const Login = () => {
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        console.log("user setting:", response.data.user);
         setUser(response.data.user);
         router.push(`/searchrides`);
       } else {
